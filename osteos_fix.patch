@@ -1,0 +1,78 @@
+*** Begin Patch
+*** Update File: src/App.jsx
+@@
+ const NudgeModal = ({ open, onClose, target }) => {
+   /* existing code */
+ };
++
++// Client Profile Modal for osteopath view to see individual client details
++const ClientProfileModal = ({ open, client, onClose }) => {
++  if (!open || !client) return null;
++  return (
++    <Modal open={open} onClose={onClose} title={`${client.name}'s Profile`}>
++      <div className="grid gap-2 text-sm">
++        <div>
++          <span className="font-semibold">Status:</span> {client.status}
++        </div>
++        <div>
++          <span className="font-semibold">Streak:</span> {client.streak}
++        </div>
++        <div>
++          <span className="font-semibold">Completion:</span> {client.completion}%
++        </div>
++        <div>
++          <span className="font-semibold">Pain Δ:</span>{" "}
++          {client.painDelta > 0 ? "+" : ""}
++          {client.painDelta}
++        </div>
++        <div>
++          <span className="font-semibold">Last check‑in:</span>{" "}
++          {client.lastCheckIn || "-"}
++        </div>
++        <div>
++          <span className="font-semibold">Next appointment:</span>{" "}
++          {client.nextAppt || "-"}
++        </div>
++      </div>
++    </Modal>
++  );
++};
+@@
+ const OsteoDashboard = () => {
+-  const [clients, setClients] = useState(clientsSeed);
++  const [clients, setClients] = useState(clientsSeed);
++  // state for profile modal
++  const [profileOpen, setProfileOpen] = useState(false);
++  const [profileClient, setProfileClient] = useState(null);
+@@
+   const [query, setQuery] = useState("");
+   const [nudgeOpen, setNudgeOpen] = useState(false);
+   const [nudgeTarget, setNudgeTarget] = useState(null);
+@@
+   return (
+     <>
+       <div className="grid gap-6">
+         {/* existing metrics, charts and table */}
+       </div>
+-    </>
++      {/* profile modal */}
++      <ClientProfileModal
++        open={profileOpen}
++        client={profileClient}
++        onClose={() => setProfileOpen(false)}
++      />
++    </>
+   );
+ };
+@@
+-              <Button className="bg-white/10">open profile</Button>
++              <Button
++                className="bg-white/10"
++                onClick={() => {
++                  setProfileClient(c);
++                  setProfileOpen(true);
++                }}
++              >
++                Open profile
++              </Button>
+*** End Patch
