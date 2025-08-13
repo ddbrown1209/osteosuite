@@ -1,0 +1,44 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>OsteoOS Suite — Client</title><link rel="stylesheet" href="style.css"/></head>
+<body>
+<div class="app" style="gap:24px">
+  <main class="main" style="width:100%">
+    <div class="card"><div class="row" style="justify-content:space-between;align-items:center">
+      <div><h2 id="clientName">Your plan</h2><div class="small">Check‑in daily, complete your plan, earn XP.</div></div>
+      <a class="btn ghost" href="index.html">Practitioner</a>
+    </div></div>
+
+    <div class="card">
+      <div class="row" style="justify-content:space-between;align-items:center"><strong>Week</strong><div class="small" id="weekRange"></div></div>
+      <div id="week" class="week" style="margin-top:10px"></div>
+    </div>
+
+    <div class="grid2">
+      <div class="card"><h3>Today's plan</h3><div id="todaysPlan" class="row" style="gap:10px"></div></div>
+      <div class="card"><h3>Goals & Rewards</h3><div id="clientGoals"></div></div>
+    </div>
+
+    <div class="grid2">
+      <div class="card"><h3>Track today</h3>
+        <label>Pain (0–10)</label><input id="cPain" type="number" min="0" max="10" step="1"/>
+        <label>Weight (kg)</label><input id="cWeight" type="number" step="0.1"/>
+        <div class="row" style="margin-top:8px"><button class="btn" id="submitDay">Submit daily check‑in</button></div>
+      </div>
+      <div class="card"><h3>Invoices</h3><div id="cInvoices"></div></div>
+    </div>
+  </main>
+</div>
+
+<div class="modal" id="checkinModal"><div class="panel">
+  <header><strong>Daily check‑in</strong><button class="btn ghost" id="closeCheck">Close</button></header>
+  <div class="body">
+    <label>Did you complete your exercises?</label><select id="ciExercises"><option value="yes">Yes</option><option value="no">No</option></select>
+    <label>Hours of sleep</label><input id="ciSleep" type="number" step="0.1"/>
+    <label>Steps</label><input id="ciSteps" type="number" step="1"/>
+    <label>Mood</label><select id="ciMood"><option>😊 Good</option><option>😐 Okay</option><option>😣 Poor</option></select>
+  </div><div class="footer"><button class="btn ghost" id="cancelCheck">Cancel</button><button class="btn" id="saveCheck">Save</button></div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+</body></html>

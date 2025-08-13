@@ -1,0 +1,117 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>OsteoOS Suite — Practitioner</title><link rel="stylesheet" href="style.css"/></head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="glow"></div>
+      <svg width="40" height="40" viewBox="0 0 64 64" aria-hidden="true"><defs><radialGradient id="g" cx="30%" cy="30%" r="70%"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#22e0ff"/></radialGradient></defs><circle cx="32" cy="32" r="22" fill="none" stroke="url(#g)" stroke-width="6"/><circle cx="32" cy="32" r="8" fill="url(#g)"/></svg>
+      <div><h1>OsteoOS Suite</h1><div class="small">Client Operating System</div></div>
+    </div>
+    <div class="search card">
+      <input id="searchInput" placeholder="Search clients…"/>
+      <button class="btn ghost" id="newClientBtn">New client</button>
+      <button class="btn" id="clientLoginBtn">Client login</button>
+    </div>
+    <div id="clients" class="clients-list"></div>
+  </aside>
+
+  <main class="main">
+    <div class="card">
+      <div class="row" style="justify-content:space-between">
+        <div>
+          <div class="badge">By Darren — DMK Performance & Injury (Osteopathy)</div>
+          <div class="small">Osteopath & online coach specialising in athletes and gym‑goers; tailored strength & conditioning alongside manual therapy.</div>
+        </div>
+        <div class="row"><button class="btn ghost" id="profileBtn">View profile</button><a class="btn" href="client.html" target="_blank">Open client view</a></div>
+      </div>
+      <div class="tabs" style="margin-top:10px">
+        <div class="tab active" data-tab="overview">Overview</div>
+        <div class="tab" data-tab="notes">Notes</div>
+        <div class="tab" data-tab="assess">Assessments</div>
+        <div class="tab" data-tab="timeline">Timeline</div>
+        <div class="tab" data-tab="billing">Billing</div>
+      </div><hr/>
+      <section data-panel="overview">
+        <div class="grid2">
+          <div class="card">
+            <div class="row" style="justify-content:space-between"><h3>Snapshot</h3><button class="btn ghost" id="editHealthBtn">Edit health metrics</button></div>
+            <div class="grid4">
+              <div class="kpi"><div class="small">Visits</div><div class="v" id="kpiVisits">–</div></div>
+              <div class="kpi"><div class="small">Pain (7 d)</div><div class="v" id="kpiPain">–</div></div>
+              <div class="kpi"><div class="small">Adherence</div><div class="v" id="kpiAdh">–</div></div>
+              <div class="kpi"><div class="small">Outcome</div><div class="v" id="kpiOutcome">–</div></div>
+            </div>
+          </div>
+          <div class="card"><h3>Upcoming appointments</h3><div id="upcoming"></div></div>
+        </div>
+        <div class="grid2">
+          <div class="card"><h3>Health profile</h3>
+            <div class="grid4">
+              <div class="kpi"><div class="small">Weight</div><div class="v" id="hpWeight">–</div></div>
+              <div class="kpi"><div class="small">BMI</div><div class="v" id="hpBmi">–</div></div>
+              <div class="kpi"><div class="small">BP / HR</div><div class="v" id="hpBp">–</div></div>
+              <div class="kpi"><div class="small">Sleep & Steps</div><div class="v" id="hpSleep">–</div></div>
+            </div>
+          </div>
+          <div class="card"><h3>Exercises</h3><div id="exerciseList"></div><div class="row" style="justify-content:flex-end;margin-top:8px"><button class="btn ghost" id="editPlanBtn">Edit plan</button></div></div>
+        </div>
+        <div class="grid2">
+          <div class="card"><h3>Body map & goals</h3><div class="bodymap" id="bodyMap"></div>
+            <div class="row" style="margin-top:10px">
+              <button class="btn ghost" id="addMarkerBtn">Add pin</button>
+              <button class="btn ghost" id="recordPainBtn">Record pain</button>
+              <button class="btn ghost" id="setGoalsBtn">Set goals</button>
+              <button class="btn warn" id="resetDemoBtn">Reset demo</button>
+            </div>
+          </div>
+          <div class="card"><h3>Billing</h3><div id="billing"></div><div class="row" style="justify-content:flex-end"><button class="btn ghost" id="addInvoiceBtn">Add invoice</button></div></div>
+        </div>
+      </section>
+      <section data-panel="notes" style="display:none"><div id="notes"></div></section>
+      <section data-panel="assess" style="display:none"><div id="assessments"></div></section>
+      <section data-panel="timeline" style="display:none"><div id="timeline"></div></section>
+      <section data-panel="billing" style="display:none"><div id="billingFull"></div></section>
+    </div>
+  </main>
+</div>
+
+<!-- Modals -->
+<div class="modal" id="newClientModal"><div class="panel">
+  <header><strong>New client / Starter questionnaire</strong><button class="btn ghost" id="closeNewClient">Close</button></header>
+  <div class="body">
+    <div class="row"><input id="ncName" placeholder="Full name"/><input id="ncEmail" placeholder="Email"/></div>
+    <div class="row"><input id="ncDob" placeholder="DOB (YYYY-MM-DD)"/><input id="ncHeight" type="number" step="0.1" placeholder="Height (cm)"/><input id="ncWeight" type="number" step="0.1" placeholder="Weight (kg)"/></div>
+    <label>Primary complaint</label><textarea id="ncComplaint" placeholder="Describe issue, onset, aggravating factors…"></textarea>
+    <div class="row"><button class="btn" id="createClient">Create client</button><button class="btn ghost" id="deleteClient">Delete client</button></div>
+    <div class="small">Client login URL: <code id="clientLink"></code></div>
+  </div><div class="footer"><button class="btn ghost" id="cancelNewClient">Close</button></div>
+</div></div>
+
+<div class="modal" id="healthModal"><div class="panel">
+  <header><strong>Edit health metrics</strong><button class="btn ghost" id="closeHealth">Close</button></header>
+  <div class="body">
+    <label>Weight (kg)</label><input id="weightInput" type="number" step="0.1"/>
+    <label>Height (cm)</label><input id="heightInput" type="number" step="0.1"/>
+    <label>Waist (cm)</label><input id="waistInput" type="number" step="0.1"/>
+    <label>BP systolic / diastolic</label><div class="row"><input id="bps" type="number" placeholder="Systolic"/><input id="bpd" type="number" placeholder="Diastolic"/><input id="hr" type="number" placeholder="HR"/></div>
+  </div><div class="footer"><button class="btn ghost" id="cancelHealth">Cancel</button><button class="btn" id="saveHealth">Save</button></div>
+</div></div>
+
+<div class="modal" id="goalsModal"><div class="panel">
+  <header><strong>Set goals</strong><button class="btn ghost" id="closeGoals">Close</button></header>
+  <div class="body">
+    <label>Weight goal</label><div class="row"><input id="startWeight" type="number" step="0.1" placeholder="Start (kg)"/><input id="targetWeight" type="number" step="0.1" placeholder="Target (kg)"/></div>
+    <label>Exercise completions per week</label><input id="exerciseTarget" type="number" step="1"/>
+    <label>BP goal</label><div class="row"><input id="bpSysTarget" type="number" placeholder="Systolic"/><input id="bpDiaTarget" type="number" placeholder="Diastolic"/></div>
+  </div><div class="footer"><button class="btn ghost" id="cancelGoals">Cancel</button><button class="btn" id="saveGoals">Save</button></div>
+</div></div>
+
+<div class="modal" id="invoiceModal"><div class="panel">
+  <header><strong>Create invoice</strong><button class="btn ghost" id="closeInv">Close</button></header>
+  <div class="body"><div class="row"><input id="invId" placeholder="INV-2004"/><input id="invAmount" type="number" step="0.01" placeholder="Amount"/></div><label>Notes</label><textarea id="invNotes" placeholder="Consultation and treatment"></textarea></div>
+  <div class="footer"><button class="btn ghost" id="cancelInv">Cancel</button><button class="btn" id="saveInv">Save</button><button class="btn" id="pdfInv">Generate PDF</button></div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+</body></html>

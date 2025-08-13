@@ -1,0 +1,16 @@
+const express=require('express'),fs=require('fs'),path=require('path'),PDF=require('pdfkit');const app=express();
+const DATA=path.join(__dirname,'data','db.json');app.use(express.json({limit:'2mb'}));app.use(express.static(__dirname));
+const load=()=>fs.existsSync(DATA)?JSON.parse(fs.readFileSync(DATA,'utf8')):{clients:[],profile:{clinic:{name:'Clinic',address:''},reviews:[]}};
+const save=(d)=>fs.writeFileSync(DATA,JSON.stringify(d,null,2));
+app.get('/api/data',(req,res)=>res.json(load()));
+app.post('/api/data',(req,res)=>{save(req.body);res.json({ok:true})});
+app.post('/api/clients',(req,res)=>{const db=load();const c=req.body;c.id=c.id||('c_'+Math.random().toString(36).slice(2,9));db.clients.push(c);save(db);res.json(c)});
+app.put('/api/clients/:id',(req,res)=>{const db=load();const i=db.clients.findIndex(x=>x.id===req.params.id);if(i<0)return res.status(404).json({error:'not found'});db.clients[i]=req.body;save(db);res.json(db.clients[i])});
+app.delete('/api/clients/:id',(req,res)=>{const db=load();const i=db.clients.findIndex(x=>x.id===req.params.id);if(i<0)return res.status(404).json({error:'not found'});db.clients.splice(i,1);save(db);res.json({ok:true})});
+app.post('/api/invoice/pdf',(req,res)=>{const{invoice,client,clinic}=req.body;res.setHeader('Content-Type','application/pdf');res.setHeader('Content-Disposition',`attachment; filename=${invoice.id||'invoice'}.pdf`);
+ const doc=new PDF({margin:50});doc.pipe(res);doc.fontSize(18).fill('#333').text(clinic.name).fontSize(10).fill('#555').text(clinic.address).moveDown();
+ doc.fontSize(16).fill('#000').text('Invoice',{align:'right'});doc.fontSize(10).fill('#333').text(`Invoice: ${invoice.id}`,{align:'right'}).text(`Date: ${invoice.date}`,{align:'right'}).moveDown();
+ doc.fontSize(12).fill('#000').text('Bill to:');doc.fontSize(10).fill('#333').text(client.name).text(client.email||'').moveDown();
+ doc.fontSize(12).fill('#000').text('Description').moveUp().text('Amount',450);doc.fontSize(10).fill('#333').text(invoice.notes||'Consultation and treatment').moveUp().text('£'+invoice.amount.toFixed(2),450).moveDown();
+ doc.fontSize(12).fill('#000').text('Total',400).text('£'+invoice.amount.toFixed(2),450).moveDown(2);doc.fontSize(10).fill('#666').text('Thank you for your business.');doc.end();});
+const PORT=process.env.PORT||8080;app.listen(PORT,()=>console.log('OsteoOS server on '+PORT));
